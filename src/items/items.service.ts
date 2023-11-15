@@ -1,30 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Item } from './Schema/item.schema';
+import { Item } from './Schema/items.schema';
+import { CreateItemsDto } from './dto/createItems.dto';
+import { UpdateItemsDto } from './dto/updateItems.dto';
 
 @Injectable()
 export class ItemsService {
-  constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
+  constructor(@InjectModel('Item') private readonly itemmodel: Model<Item>) {}
 
-  async findAll(): Promise<Item[]> {
-    return await this.itemModel.find();
+  async findAllItems(): Promise<Item[]> {
+    const findAll = await this.itemmodel.find();
+    return findAll;
   }
 
-  async findOne(id): Promise<Item> {
-    return await this.itemModel.findOne({ _id: id });
+  async createItem(item: CreateItemsDto): Promise<Item> {
+    const addItems = await this.itemmodel.create(item);
+    return addItems.save();
   }
 
-  async createItem(item: Item): Promise<Item> {
-    const newItem = new this.itemModel(item);
-    return await newItem.save();
+  async findAllById(id) {
+    const findItem = await this.itemmodel.findById(id);
+    if (!findItem) {
+      return { msg: `item does not exist` };
+    }
+    return findItem;
   }
 
-  async updateItem(id: string, item: Item): Promise<Item> {
-    return await this.itemModel.findByIdAndUpdate(id, item, { new: true });
+  async updateItems(id: string, updateItem: UpdateItemsDto) {
+    const editItem = await this.itemmodel.findByIdAndUpdate(id, updateItem, {
+      new: true,
+    });
+    if (!editItem) {
+      return { msg: `item does not exist` };
+    }
+    return editItem;
   }
 
-  async deleteItem(id: string): Promise<Item> {
-    return await this.itemModel.findByIdAndRemove(id);
+  async deleteItem(id: string) {
+    const deleteItem = await this.itemmodel.findByIdAndDelete(id);
+    if (!deleteItem) {
+      return { msg: `item does not exist` };
+    }
+    return { msg: `Succesfully deleted` };
   }
 }
