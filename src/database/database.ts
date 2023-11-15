@@ -11,7 +11,7 @@ config();
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
-    }),
+    }), 
     MongooseModule.forRootAsync({
       useFactory: async () => ({
         uri: process.env.DB_URL,

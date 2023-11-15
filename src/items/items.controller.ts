@@ -3,44 +3,44 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
-  Param,
 } from '@nestjs/common';
-import { CreateItemDto } from './dto/createDto';
+import { CreateItemsDto } from './dto/createItems.dto';
 import { ItemsService } from './items.service';
-import { Item } from './Schema/item.schema';
+import { Item } from './Schema/items.schema';
+import { UpdateItemsDto } from './dto/updateItems.dto';
 
 @Controller('items')
-export class ItemsController {
-  constructor(private readonly itemService: ItemsService) {}
-  // get all items
+export class ItemController {
+  constructor(private readonly itemsService: ItemsService) {}
+
   @Get('all')
   async findAll(): Promise<Item[]> {
-    return await this.itemService.findAll();
+    return await this.itemsService.findAllItems();
   }
 
-  // get item by the id
   @Get(':id')
-  findOne(@Param('id') id): Promise<Item> {
-    return this.itemService.findOne(id);
+  async findOne(@Param('id') id){
+    return await this.itemsService.findAllById(id);
   }
 
-  // create item
   @Post()
-  create(@Body() createItemDto: CreateItemDto): Promise<Item> {
-    return this.itemService.createItem(createItemDto);
+  async createItems(@Body() item: CreateItemsDto): Promise<Item> {
+    return await this.itemsService.createItem(item);
   }
 
-  // update item by id
   @Put(':id')
-  update(@Body() updateItemDto: CreateItemDto, @Param('id') id): Promise<Item> {
-    return this.itemService.updateItem(id, updateItemDto);
+  async updateItem(
+    @Param('id') id: string,
+    @Body() updateItem: UpdateItemsDto,
+  ) {
+    return await this.itemsService.updateItems(id, updateItem);
   }
 
-  // delete item by id
   @Delete(':id')
-  delete(@Param('id') id): Promise<Item> {
-    return this.itemService.deleteItem(id);
+  async deleteItem(@Param('id') id) {
+    return await this.itemsService.deleteItem(id);
   }
 }

@@ -12,7 +12,7 @@ export class Item {
   description: string;
 
   @Prop({ required: true })
-  qty: number;
+  qty: string;
 }
 
-export const ItemSchema = SchemaFactory.createForClass(Item);
+export const ItemsSchema = SchemaFactory.createForClass(Item);
